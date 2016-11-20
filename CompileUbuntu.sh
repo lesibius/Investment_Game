@@ -1,1 +1,1 @@
-dmcs Application.cs
+dmcs ApplicationCMD.cs
