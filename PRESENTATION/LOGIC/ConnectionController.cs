@@ -4,21 +4,51 @@ using Presentation.Interface;
 namespace Presentation.Logic
 {
     
+    /// <summary>
+    /// Controller for connection UI
+    /// </summary>
     public class ConnectionController
     {
-
+        /// <summary>
+        /// Constructor of the <c>ConnectionController</c> class
+        /// </summary>
+        /// <param name="model">A model that implement the <c>IConnectionDisplay</c> interface</param>
         public ConnectionController(IConnectionDisplay model)
         {
             Model = model;
+            this.GetUserID += model.GetUserID;                  //Use the GetUserID as a delegated function
+            this.GetUserPassword += model.GetUserPassword;      //Use the GetUserPassword as a delegated function
         }
 
+        /// <summary>
+        /// Model for the connection UI
+        /// </summary>
+        /// <returns></returns>
         protected IConnectionDisplay Model { get; set; }
 
-        public void GetConnectionInformation()
-        {
-            System.Console.WriteLine(Model.GetUserID());
-            System.Console.WriteLine(Model.GetUserPassword());
-        }
+        /// <summary>
+        /// Delegate used to retrive the user ID
+        /// </summary>
+        /// <returns>The user ID</returns>
+        public delegate string UserIDRetriver();
+
+        /// <summary>
+        /// Delegate used to retrive the user password
+        /// </summary>
+        /// <returns>The user password</returns>
+        public delegate string UserPasswordRetriever();
+
+        /// <summary>
+        /// Implement the delegate to retrieve the user ID
+        /// </summary>
+        public UserPasswordRetriever GetUserID;
+
+        /// <summary>
+        /// Implement the delegate to retrieve the user password
+        /// </summary>
+        public UserIDRetriver GetUserPassword;
+        
+        
     }
 
 
