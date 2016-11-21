@@ -1,10 +1,13 @@
 using System;
+using CMD;
 
 
 public class Application
 {
     public static void Main()
     {
-        System.Console.WriteLine("Hello world");
+        MainCommandPage MainPage = new MainCommandPage();
+        MainPage.Show();
+        MainPage.CallingPage.Show();
     }
 }
