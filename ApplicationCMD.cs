@@ -1,13 +1,15 @@
 using System;
-using CMD;
+using Presentation.Interface;
+using Presentation.UI.CMD;
+using Presentation.Logic;
 
 
 public class Application
 {
     public static void Main()
     {
-        MainCommandPage MainPage = new MainCommandPage();
-        MainPage.Show();
-        MainPage.CallingPage.Show();
+        CMDConnectionPage CNP = new CMDConnectionPage();
+        ConnectionController CNC = new ConnectionController(CNP);
+        CNC.GetConnectionInformation();
     }
 }

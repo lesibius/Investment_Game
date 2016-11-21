@@ -1,7 +1,7 @@
 using System;
 
 
-namespace CMD
+namespace Presentation.UI.CMD
 {
 
     public class MainCommandPage : CommandPage

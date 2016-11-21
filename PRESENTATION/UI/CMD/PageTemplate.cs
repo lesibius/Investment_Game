@@ -1,6 +1,6 @@
 using System;
 
-namespace CMD
+namespace Presentation.UI.CMD
 {
 
     public abstract class CommandPage
