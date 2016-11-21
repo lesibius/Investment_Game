@@ -9,14 +9,14 @@ namespace Presentation.UI.CMD
 
         public string GetUserPassword()
         {
-            System.Console.WriteLine("Please enter your ID");
+            System.Console.WriteLine("Please enter your password");
             return(System.Console.ReadLine());
         }
 
 
         public string GetUserID()
         {
-            System.Console.WriteLine("Please enter your password");
+            System.Console.WriteLine("Please enter your ID");
             return(System.Console.ReadLine());
         }
 
