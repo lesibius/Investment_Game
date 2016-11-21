@@ -13,8 +13,8 @@ namespace Business.Components.DataManagement
             this.Connector += connection.Connect;
         }
 
-        public delegate string UserIDRetriever();
-        public delegate string UserPasswordRetriever();
+        public event AuthenticationDelegate.UserIDRetriever PullUserID;
+        public event AuthenticationDelegate.UserPasswordRetriver PullUserPassword;
 
         public delegate bool ConnectMethod(string UserID, string UserPassword);
         ConnectMethod Connector;

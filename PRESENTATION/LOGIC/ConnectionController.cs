@@ -1,5 +1,6 @@
 using System;
 using Presentation.Interface;
+using Presentation_Business;
 
 namespace Presentation.Logic
 {
@@ -13,11 +14,13 @@ namespace Presentation.Logic
         /// Constructor of the <c>ConnectionController</c> class
         /// </summary>
         /// <param name="model">A model that implement the <c>IConnectionDisplay</c> interface</param>
-        public ConnectionController(IConnectionDisplay model)
+        /// <param name="auth">A business components that implement the <c>IAuthenticator</c> interface</param>
+        public ConnectionController(IConnectionDisplay model, IAuthenticator auth)
         {
             Model = model;
             this.GetUserID += model.GetUserID;                  //Use the GetUserID as a delegated function
             this.GetUserPassword += model.GetUserPassword;      //Use the GetUserPassword as a delegated function
+            auth.GetUserID += model.GetUserID;
         }
 
         /// <summary>

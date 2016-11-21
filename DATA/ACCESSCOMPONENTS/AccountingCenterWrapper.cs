@@ -1,19 +1,16 @@
 using System;
 using System.Data;
 using MySql.Data.MySqlClient;
-using MainApplicationUI;
-using DbInterface;
 using System.Collections.Generic;
+using Business_Data;
 
-//Compile with: dmcs Test_Connect_MySQL.cs -r:/usr/lib/cli/MySql.Data-6.4/MySql.Data.dll -r:System.Data.dll
-
-namespace AccountingCenter 
+namespace Data.AccessComponents 
 {
 
     /// <summary>
     /// Wrapper to communicate with the accounting database
     /// </summary>
-    public class AccountingCenterWrapper : IConnectable
+    public class AccountingCenterWrapper : IAuthenticable
     {
         /// <summary>
         /// Constructor of the wrapper
@@ -38,7 +35,7 @@ namespace AccountingCenter
         /// <summary>
         /// Connect to the accounting database
         /// </summary>
-        public void Connect(string user, string pwd, string server = "127.0.0.1",string port = "3306")
+        public bool Connect(string user, string pwd, string server = "127.0.0.1",string port = "3306")
         {
             string ConnectionString = 
                 "Persist Security Info=False;"                  +
@@ -51,6 +48,8 @@ namespace AccountingCenter
             dbcon = new MySqlConnection(ConnectionString);
             dbcon.Open();
 
+            return(IsConnected());
+
         }
 
         /// <summary>
@@ -58,9 +57,9 @@ namespace AccountingCenter
         /// </summary>
         /// <param name="user"></param>
         /// <param name="pwd"></param>
-        public void Connect(string user, string pwd)
+        public bool Connect(string user, string pwd)
         {
-            Connect(user, pwd,"127.0.0.1","3306");
+            return(Connect(user, pwd,"127.0.0.1","3306"));
         }
         
         /// <summary>
