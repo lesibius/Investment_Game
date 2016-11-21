@@ -17,7 +17,7 @@ public class Application
         DBAuthenticator Auth = new DBAuthenticator(AC);
         CMDConnectionPage CNP = new CMDConnectionPage();
         ConnectionController CNC = new ConnectionController(CNP, Auth);
-        
-        Console.WriteLine("{0}",CNC.GetUserID());
+
+        Auth.Connect();
     }
 }
