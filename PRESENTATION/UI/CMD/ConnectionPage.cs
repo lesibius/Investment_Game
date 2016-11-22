@@ -9,6 +9,16 @@ namespace Presentation.UI.CMD
     /// </summary>
     public class CMDConnectionPage : IConnectionDisplay
     {
+
+        /// <summary>
+        /// Method to implement the <c>IConnectionDisplay</c> interface
+        /// Show the page
+        /// </summary>
+        public void Show()
+        {
+            Console.WriteLine("Connecting to the Database");
+        }
+
         /// <summary>
         /// Method to implement the <c>IConnectionDisplay</c> interface
         /// </summary>

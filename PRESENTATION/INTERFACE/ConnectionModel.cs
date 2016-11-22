@@ -19,6 +19,8 @@ namespace Presentation.Interface
         /// </summary>
         /// <returns>The user password</returns>
         string GetUserPassword();
+
+        void Show();
     }
 
 }

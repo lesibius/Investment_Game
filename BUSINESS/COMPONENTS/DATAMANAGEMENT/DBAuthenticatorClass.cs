@@ -20,17 +20,12 @@ namespace Business.Components.DataManagement
         }
 
         /// <summary>
-        /// Event triggering a pull request for the user ID
-        /// </summary>
-        public event AuthenticationDelegate.UserIDRetriever PullUserID;
-
-        /// <summary>
         /// Event triggering a pull request for the user password
         /// </summary>
-        public event AuthenticationDelegate.UserPasswordRetriver PullUserPassword;
+        public event AuthenticationComponents.PullUserCredentials CredentialRequest;
 
         /// <summary>
-        /// Delegate for database connection. Linked to the <c>Connect</c> method implemented bw the <c>IAuthenticable</c> interface
+        /// Delegate for database connection. Linked to the <c>Connect</c> method implemented by the <c>IAuthenticable</c> interface
         /// </summary>
         /// <param name="UserID">User ID to connect to the <c>IAuthenticable</c> instance</param>
         /// <param name="UserPassword">User password to connect to the <c>IAuthenticable</c> instance</param>
@@ -38,7 +33,7 @@ namespace Business.Components.DataManagement
         public delegate bool ConnectMethod(string UserID, string UserPassword);
 
         /// <summary>
-        /// Iplement the <c>ConnectMethod</c> delegate
+        /// Implement the <c>ConnectMethod</c> delegate
         /// </summary>
         ConnectMethod Connector;
 
@@ -48,9 +43,9 @@ namespace Business.Components.DataManagement
         /// <returns><c>true</c> if the connection succeded</returns>
         public bool Connect()
         {   
-            string ID = PullUserID();
-            string PWD = PullUserPassword();
-            return(Connector(ID,PWD));
+            AuthenticationComponents.Credential credential = CredentialRequest();
+            Connector(credential.ID,credential.PWD);
+            return(true);
         }
 
     }

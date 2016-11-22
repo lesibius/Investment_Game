@@ -18,14 +18,21 @@ namespace Presentation.Logic
         public ConnectionController(IConnectionDisplay model, IAuthenticator auth)
         {
             Model = model;                                          //Set the UI model
-            auth.PullUserID += model.GetUserID;                     //Suscribe to the user ID pull request
-            auth.PullUserPassword += model.GetUserPassword;         //Suscribe to the user password pull request
+            auth.CredentialRequest += this.GetUserCredential;                     //Suscribe to the user ID pull request
         }
 
         /// <summary>
         /// Model for the connection UI
         /// </summary>
         protected IConnectionDisplay Model { get; set; }
+
+        public AuthenticationComponents.Credential GetUserCredential()
+        {
+            Model.Show();
+            AuthenticationComponents.Credential credential = 
+                new AuthenticationComponents.Credential(Model.GetUserID(),Model.GetUserPassword());
+                return(credential);
+        }
 
         
         

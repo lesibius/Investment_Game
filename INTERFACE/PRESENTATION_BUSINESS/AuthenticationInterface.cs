@@ -8,19 +8,34 @@ namespace Presentation_Business
     /// <summary>
     /// Static class to store delegates related to authentication and create authentication events
     /// </summary>
-    public static class AuthenticationDelegate
+    public static class AuthenticationComponents
     {
         /// <summary>
-        /// Delegate for pull request concerning user ID
+        /// Delegate to pull credential request
         /// </summary>
         /// <returns>The user ID</returns>
-        public delegate string UserIDRetriever();
+        public delegate Credential PullUserCredentials();
 
         /// <summary>
-        /// Delegate for pull request concerning the user password
+        /// Structure to store user credentials
         /// </summary>
-        /// <returns>The user password</returns>
-        public delegate string UserPasswordRetriver();
+        public struct Credential
+        {
+            public string ID;
+            public string PWD;
+
+            /// <summary>
+            /// Constructor for the <c>Credential</c> structure
+            /// </summary>
+            /// <param name="id"></param>
+            /// <param name="pwd"></param>
+            public Credential(string id, string pwd)
+            {
+                ID = id;
+                PWD = pwd;
+            }
+        }
+
     }
     
 
@@ -36,14 +51,10 @@ namespace Presentation_Business
         bool Connect();
 
         /// <summary>
-        /// Event to trigger pull request for user ID
+        /// Event to trigger pull request for user ID and password
         /// </summary>
-        event AuthenticationDelegate.UserIDRetriever PullUserID;
+        event AuthenticationComponents.PullUserCredentials CredentialRequest;
 
-        /// <summary>
-        /// Event to trigger pull request for user password
-        /// </summary>
-        event AuthenticationDelegate.UserPasswordRetriver PullUserPassword;
 
     }
 }
