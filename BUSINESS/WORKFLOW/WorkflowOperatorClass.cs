@@ -7,11 +7,11 @@ namespace Business.Workflow
     /// <summary>
     /// Enumeration of workflow state
     /// </summary>
-    Public enum WorkflowState
+    public enum WorkflowState
     {
-        Unstarted;
-        Started;
-        Finished;
+        Unstarted,
+        Started,
+        Finished
     }
 
     
@@ -20,10 +20,10 @@ namespace Business.Workflow
 
         public WorkFlowOperator()
         {
-            State = WorkflowState.Unstarted
+            State = WorkflowState.Unstarted;
         }
 
-        WorkflowState State { private set; public get;}
+        public WorkflowState State { private set; get;}
 
     }
 
