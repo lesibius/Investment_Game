@@ -17,24 +17,23 @@ namespace Presentation.Logic
         /// <param name="auth">A business components that implement the <c>IAuthenticator</c> interface</param>
         public ConnectionController(IConnectionDisplay model, IAuthenticator auth)
         {
-            Model = model;                                          //Set the UI model
-            auth.CredentialRequest += this.GetUserCredential;                     //Suscribe to the user ID pull request
+            Model = model;                                              //Set the UI model
+            Authenticator = auth;                                       //Set the related authenticator
+            Model.ValidateCredential += Authenticator.Connect;          //Suscribe to the user ID pull request
+            Authenticator.PullCredential += this.Show;                  //When the pull credential event is triggered, the GUI directly request a connection to the database
         }
-
+ 
         /// <summary>
         /// Model for the connection UI
         /// </summary>
         protected IConnectionDisplay Model { get; set; }
-
-        public AuthenticationComponents.Credential GetUserCredential()
+        
+        protected IAuthenticator Authenticator {get; set; }
+       
+       public void Show()
         {
             Model.Show();
-            AuthenticationComponents.Credential credential = 
-                new AuthenticationComponents.Credential(Model.GetUserID(),Model.GetUserPassword());
-                return(credential);
         }
-
-        
         
     }
 

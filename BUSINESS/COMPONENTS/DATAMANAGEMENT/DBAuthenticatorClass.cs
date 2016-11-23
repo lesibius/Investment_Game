@@ -16,36 +16,32 @@ namespace Business.Components.DataManagement
         /// <param name="connection">Instance implementing the <c>IAuthenticable</c> interface</param>
         public DBAuthenticator(IAuthenticable connection)
         {
-            this.Connector += connection.Connect;
+            this.Connection = connection;                       //Store a reference to the database
         }
 
         /// <summary>
-        /// Event triggering a pull request for the user password
+        /// Reference to the database to connect
         /// </summary>
-        public event AuthenticationComponents.PullUserCredentials CredentialRequest;
+        protected IAuthenticable Connection;
 
         /// <summary>
-        /// Delegate for database connection. Linked to the <c>Connect</c> method implemented by the <c>IAuthenticable</c> interface
-        /// </summary>
-        /// <param name="UserID">User ID to connect to the <c>IAuthenticable</c> instance</param>
-        /// <param name="UserPassword">User password to connect to the <c>IAuthenticable</c> instance</param>
-        /// <returns><c>true</c> if the connection succeded</returns>
-        public delegate bool ConnectMethod(string UserID, string UserPassword);
-
-        /// <summary>
-        /// Implement the <c>ConnectMethod</c> delegate
-        /// </summary>
-        ConnectMethod Connector;
-
-        /// <summary>
-        /// Create two push request for the user ID and password and connect to the database
+        /// Connect to the database
         /// </summary>
         /// <returns><c>true</c> if the connection succeded</returns>
-        public bool Connect()
+        /// <param name="UserID">The user ID</param>
+        /// <param name="UserPassword">The user password</param>
+        /// <returns></returns>
+        public bool Connect(string UserID, string UserPassword)
         {   
-            AuthenticationComponents.Credential credential = CredentialRequest();
-            Connector(credential.ID,credential.PWD);
+            Connection.Connect(UserID,UserPassword);
             return(true);
+        }
+
+        public event CredentialRequest PullCredential;
+
+        public void NewCredentialRequest()
+        {
+            PullCredential();
         }
 
     }
