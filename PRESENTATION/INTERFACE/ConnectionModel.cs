@@ -3,6 +3,10 @@ using System;
 
 namespace Presentation.Interface
 {
+
+    public delegate bool PushCredential(string UserID, string UserPassword);
+
+
     /// <summary>
     /// Interface to create a model to display connection UI
     /// </summary>
@@ -21,6 +25,10 @@ namespace Presentation.Interface
         string GetUserPassword();
 
         void Show();
+
+        
+
+        event PushCredential ValidateCredential;
     }
 
 }

@@ -18,6 +18,6 @@ public class Application
         CMDConnectionPage CNP = new CMDConnectionPage();
         ConnectionController CNC = new ConnectionController(CNP, Auth);
 
-        Auth.Connect();
+        Auth.NewCredentialRequest();
     }
 }

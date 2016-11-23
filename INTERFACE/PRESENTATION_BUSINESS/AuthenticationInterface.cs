@@ -5,39 +5,8 @@ using Business_Data;
 
 namespace Presentation_Business
 {
-    /// <summary>
-    /// Static class to store delegates related to authentication and create authentication events
-    /// </summary>
-    public static class AuthenticationComponents
-    {
-        /// <summary>
-        /// Delegate to pull credential request
-        /// </summary>
-        /// <returns>The user ID</returns>
-        public delegate Credential PullUserCredentials();
 
-        /// <summary>
-        /// Structure to store user credentials
-        /// </summary>
-        public struct Credential
-        {
-            public string ID;
-            public string PWD;
-
-            /// <summary>
-            /// Constructor for the <c>Credential</c> structure
-            /// </summary>
-            /// <param name="id"></param>
-            /// <param name="pwd"></param>
-            public Credential(string id, string pwd)
-            {
-                ID = id;
-                PWD = pwd;
-            }
-        }
-
-    }
-    
+    public delegate void CredentialRequest();
 
     /// <summary>
     /// Interface to create an authenticator component
@@ -48,13 +17,13 @@ namespace Presentation_Business
         /// Method that calls the <c>Connect</c> method of the underlying database
         /// </summary>
         /// <returns><c>true</c> if the authentication succeded</returns>
-        bool Connect();
+        /// <param name="UserID">The user ID</param>
+        /// <param name="UserPassword">The user password</param>
+        /// <returns></returns>
+        bool Connect(string UserID, string UserPassword);
 
-        /// <summary>
-        /// Event to trigger pull request for user ID and password
-        /// </summary>
-        event AuthenticationComponents.PullUserCredentials CredentialRequest;
-
+        
+        event CredentialRequest PullCredential;
 
     }
 }

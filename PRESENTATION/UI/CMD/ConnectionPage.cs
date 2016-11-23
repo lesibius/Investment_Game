@@ -16,7 +16,13 @@ namespace Presentation.UI.CMD
         /// </summary>
         public void Show()
         {
+            string ID;
+
             Console.WriteLine("Connecting to the Database");
+            Console.WriteLine("Please enter your ID");
+            ID = Console.ReadLine();
+            Console.WriteLine("Please enter your password");
+            ValidateCredential(ID,Console.ReadLine());
         }
 
         /// <summary>
@@ -38,6 +44,8 @@ namespace Presentation.UI.CMD
             System.Console.WriteLine("Please enter your ID");
             return(System.Console.ReadLine());
         }
+
+        public event PushCredential ValidateCredential;
 
     }
 
