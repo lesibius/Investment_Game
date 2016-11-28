@@ -38,7 +38,7 @@ namespace ValueOperator
         /// </summary>
         /// <param name="name"></param>
         /// <param name="iso"></param>
-        public static void CreateCurrencyInstance(string name, string iso)
+        public static void CreateCurrency(string name, string iso)
         {
             Currency tempCurrency = new Currency(name,iso);
             if(AvailableCurrencies.ContainsValue(tempCurrency))
@@ -55,7 +55,7 @@ namespace ValueOperator
         /// </summary>
         /// <param name="iso">ISO code of the currency to return</param>
         /// <returns>A currency (or an exception if the currency does not exist)</returns>
-        public static Currency GetCurrencyInstance(string iso)
+        public static Currency GetCurrency(string iso)
         {
             if(AvailableCurrencies.ContainsKey(iso))
             {
@@ -126,4 +126,140 @@ namespace ValueOperator
             //return Convert.ToInt32(isoLetters[0]);
         }
     }
+
+
+    /****************************************************************************************
+    *                               Currency Pairs                                          *
+    ****************************************************************************************/
+
+    /// <summary>
+    /// Allows to store a currency exchange rate for currency conversion
+    /// </summary>
+    public class CurrencyPair
+    {   
+
+        /**********************     Constructor     *************************************/
+
+
+        /// <summary>
+        /// Constructor of the <c>CurrencyPair</c> class
+        /// </summary>
+        /// <param name="baseCurrency">Base currency of the pair</param>
+        /// <param name="quotationCurrency">Quotation currency of the pair</param>
+        public CurrencyPair(Currency baseCurrency, Currency quotationCurrency)
+        {
+            if(baseCurrency==quotationCurrency){throw new System.ArgumentException("Quotation and base currency cannot be the same");}
+            BaseCurrency = baseCurrency;
+            QuotationCurrency = quotationCurrency;
+            BID = 0;
+            ASK = 0;
+            MID = 0;
+        }
+
+        /// <summary>
+        /// Constructor of the <c>CurrencyPair</c> class
+        /// </summary>
+        /// <param name="baseCurrency">Base currency of the pair</param>
+        /// <param name="quotationCurrency">Quotation currency of the pair</param>
+        /// <param name="mid">Mid price of the currency pair</param>
+        public CurrencyPair(Currency baseCurrency, Currency quotationCurrency, double mid)
+        {
+            BaseCurrency = baseCurrency;
+            QuotationCurrency = quotationCurrency;
+            BID = mid;
+            ASK = mid;
+            MID = mid;
+        }
+
+        /// <summary>
+        /// Constructor of the <c>CurrencyPair</c> class
+        /// </summary>
+        /// <param name="baseCurrency">Base currency of the pair</param>
+        /// <param name="quotationCurrency">Quotation currency of the pair</param>
+        /// <param name="bid">Bid for the currency pair</param>
+        /// <param name="ask">Ask for the currency pair</param>
+        public CurrencyPair(Currency baseCurrency, Currency quotationCurrency, double bid, double ask)
+        {
+            BaseCurrency = baseCurrency;
+            QuotationCurrency = quotationCurrency;
+            BID = bid;
+            ASK = ask;
+            MID = (bid + ask) / 2.0;
+        }
+
+        /*****************************      Properties      **************************************/
+
+        public Currency BaseCurrency { get; private set;}
+        public Currency QuotationCurrency { get; private set;}
+        public double BID { get; set; }
+        public double ASK { get; set; }
+        public double MID { get; private set; }
+
+        /******************************     Overrided Methods   *************************************/
+
+        /// <summary>
+        /// Override the <c>ToString</c> method
+        /// </summary>
+        /// <returns>A <c>string</c> representation of the <c>CurrencyPair</c> instance</returns>
+        public override string ToString()
+        {
+            if(BID != 0 || ASK != 0)
+            {
+                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + BID + "/" + ASK);
+            }
+            else if(MID != 0)
+            {
+                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + MID);
+            }
+            else
+            {
+                return("No quotation provided for " + BaseCurrency.ISO + QuotationCurrency.ISO);
+            }
+        }
+
+        /// <summary>
+        /// Override the <c>Equals</c> method
+        /// </summary>
+        /// <param name="obj">Method to test for equality</param>
+        /// <returns>True if <c>this</c> instance is equal to <c>obj</c></returns>
+        public override bool Equals(object obj)
+        {
+            return obj is CurrencyPair && this == (CurrencyPair)obj;
+        }
+
+        /// <summary>
+        /// Override the <c>GetHashCode</c> method
+        /// </summary>
+        /// <returns>The instance hashcode</returns>
+        public override int GetHashCode()
+        {
+            int x = this.BaseCurrency.GetHashCode();
+            int y = this.QuotationCurrency.GetHashCode();
+            return Math.Min(x,y) ^ Math.Max(x,y);
+        }
+
+        /// <summary>
+        /// Override the == operator
+        /// </summary>
+        /// <param name="c1">Left hand side <c>CurrencyPair</c> instance</param>
+        /// <param name="c2">Right hand side <c>CurrencyPair</c> instance</param>
+        public static bool operator ==(CurrencyPair c1, CurrencyPair c2)
+        {
+            bool cond1 = c1.BaseCurrency == c2.BaseCurrency || c1.BaseCurrency == c2.QuotationCurrency;
+            bool cond2 = c1.QuotationCurrency == c2.BaseCurrency || c1.QuotationCurrency == c2.QuotationCurrency;
+            bool cond3 = (c1.BaseCurrency != c1.QuotationCurrency) && (c2.BaseCurrency != c2.QuotationCurrency);
+            return cond1 && cond2 && cond3;
+        }
+
+        /// <summary>
+        /// Override the != operator
+        /// </summary>
+        /// <param name="c1">Left hand side <c>CurrencyPair</c> instance</param>
+        /// <param name="c2">Right hand side <c>CurrencyPair</c> instance</param>
+        public static bool operator !=(CurrencyPair c1, CurrencyPair c2)
+        {
+            return !(c1==c2);
+        }
+    }
+
 }
