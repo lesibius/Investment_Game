@@ -67,12 +67,49 @@ namespace ValueOperator
         /// </summary>
         public Currency Currency { get; set; }
 
+        /********************       Conversion Methods      ***************************/
+        /// <summary>
+        /// Convert to a new <c>Value</c> instance
+        /// </summary>
+        /// <param name="quotationCurrency">Currency in which the value instance will be converted</param>
+        /// <returns>A new <c>Value</c> instance in the quotation currency</returns>
+        public Value Convert(string quotationCurrency)
+        {
+            if(this.Currency.ISO != quotationCurrency)
+            {
+                double tempUnit = Currency.Convert(this.Unit,this.Currency.ISO,quotationCurrency);
+                return new Value(tempUnit, quotationCurrency);
+            }
+            else
+            {
+                return new Value(this.Unit,this.Currency.ISO);
+            }
+        }
+
+        /// <summary>
+        /// Convert to a new <c>Value</c> instance
+        /// </summary>
+        /// <param name="quotationCurrency">Currency in which the value instance will be converted</param>
+        /// <returns>A new <c>Value</c> instance in the quotation currency</returns>
+        public Value Convert(Currency quotationCurrency)
+        {
+            if(this.Currency != quotationCurrency)
+            {
+                double tempUnit = Currency.Convert(this.Unit,this.Currency,quotationCurrency);
+                return new Value(tempUnit, quotationCurrency);
+            }
+            else
+            {
+                return new Value(this.Unit,this.Currency);
+            }
+        }
+
         /*********************      Overrided Methods       ***************************/
 
         /// <summary>
         /// String representation of the <c>Value</c> instance (e.g. EUR 1,250.00)
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A string representation of the <c>Value</c> instance</returns>
         public override string ToString()
         {
             return(this.Currency.ISO + " " + String.Format("{0:n}", this.Unit));
@@ -92,7 +129,8 @@ namespace ValueOperator
             {return new Value(v1.Unit + v2.Unit,v1.Currency);}
             else
             {
-                return v1;
+                Value tempVal = v2.Convert(v1.Currency);
+                return v1 + tempVal;
             }
         }
 
@@ -117,16 +155,31 @@ namespace ValueOperator
             return new Value(v1.Unit + vdouble,v1.Currency);
         }
 
+        /// <summary>
+        /// Override the + operator when a double and a <c>Value</c> instance are provided
+        /// </summary>
+        /// <param name="vdouble">Double to add</param>
+        /// <param name="v1"><c>Value</c> instance to add (used for target currency)</param>
         public static Value operator +(double vdouble, Value v1)
         {
             return v1 + vdouble;
         }
 
+        /// <summary>
+        /// Override the - operator when a <c>Value</c> instance and a double are provided
+        /// </summary>
+        /// <param name="v1"><c>Value</c> instance</param>
+        /// <param name="vdouble">Double instance</param>
         public static Value operator -(Value v1, double vdouble)
         {
             return v1 + (-vdouble);
         }
 
+        /// <summary>
+        /// Override the - operator when a double and a <c>Value</c> instance are provided
+        /// </summary>
+        /// <param name="vdouble">Double instance</param>
+        /// <param name="v1"><c>Value</c> instance</param>
         public static Value operator -(double vdouble, Value v1)
         {
             return new Value(vdouble - v1.Unit, v1.Currency);

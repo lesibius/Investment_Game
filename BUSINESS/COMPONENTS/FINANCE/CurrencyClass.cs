@@ -29,17 +29,23 @@ namespace ValueOperator
         }
 
         /// <summary>
-        /// HashSet of <c>Currency</c> to ensure that each currency is instanciated only once
+        /// Dictionary of <c>Currency</c> to ensure that each currency is instanciated only once
         /// </summary>
         private static Dictionary<string,Currency> AvailableCurrencies = new Dictionary<string,Currency>();
 
         /// <summary>
-        /// Create an instance of <c>Currency</c> if it has not been instanciated yet and stores it in the HashSet
+        /// Dictionary of <c>CurrencyPair</c> to manage exchange rates
+        /// </summary>
+        private static Dictionary<CurrencyPair, CurrencyPair> Pairs = new Dictionary<CurrencyPair, CurrencyPair>();
+
+        /// <summary>
+        /// Create an instance of <c>Currency</c> if it has not been instanciated yet and stores it in the Dictionary
         /// </summary>
         /// <param name="name"></param>
         /// <param name="iso"></param>
         public static void CreateCurrency(string name, string iso)
         {
+            //Create a new temporary currency if not already present in the dictionary
             Currency tempCurrency = new Currency(name,iso);
             if(AvailableCurrencies.ContainsValue(tempCurrency))
             {
@@ -47,6 +53,17 @@ namespace ValueOperator
                 throw new System.ArgumentException(
                     "A currency with the ISO code " + tempCurrency.ISO + " is already in the dictionary", "original");
             }
+            //Create a new CurrencyPair for each <c>Currency</c> present in the dictionary
+            if(AvailableCurrencies.Count > 0)
+            {
+                foreach (Currency c in AvailableCurrencies.Values)
+                {
+                    CurrencyPair tempPair = new CurrencyPair(c,tempCurrency);
+                    Pairs.Add(tempPair,tempPair);
+                }
+            }
+
+            //Add it to the dictionary
             AvailableCurrencies.Add(iso,tempCurrency);
         }
 
@@ -67,6 +84,93 @@ namespace ValueOperator
                     "No currency with the ISO code " + iso + " has been found" , "original");
             }
         }
+        /***************************        Convert Currency        *******************************/
+
+        /// <summary>
+        /// Convert a value from a base currency to a quotation currency
+        /// </summary>
+        /// <param name="val">Value to convert</param>
+        /// <param name="baseCurrency">Base currency</param>
+        /// <param name="quotationCurrency">Quotation currency</param>
+        /// <returns>A converted value</returns>
+        public static double Convert(double val, string baseCurrency, string quotationCurrency)
+        {
+            Currency keybase = Currency.GetCurrency(baseCurrency);
+            Currency keyquote = Currency.GetCurrency(quotationCurrency);
+            CurrencyPair tempPair = Pairs[new CurrencyPair(keybase,keyquote)];
+            if(tempPair.BaseCurrency != keybase)
+            {
+                tempPair = tempPair.GetNewReversedCurrencyPair();
+            }
+            
+            return tempPair.Convert(val);
+        }
+
+        /// <summary>
+        /// Convert a value from a base currency to a quotation currency
+        /// </summary>
+        /// <param name="val">Value to convert</param>
+        /// <param name="baseCurrency">Base currency</param>
+        /// <param name="quotationCurrency">Quotation currency</param>
+        /// <returns>A converted value</returns>
+        public static double Convert(double val, Currency baseCurrency, Currency quotationCurrency)
+        {
+            return Convert(val,baseCurrency.ISO,quotationCurrency.ISO);
+        }
+
+        /********************       Manage Exchange Rates       ***********************************/
+
+        /// <summary>
+        /// Set the BID and ASK value for the selected currency pair
+        /// </summary>
+        /// <param name="baseCurrency">Base currency</param>
+        /// <param name="quotationCurrency">Quotation currency</param>
+        /// <param name="bid">BID value</param>
+        /// <param name="ask">ASK value</param>
+        public static void SetBIDASK(string baseCurrency, string quotationCurrency, double bid, double ask)
+        {
+            //Create the key to retrieve the currency pair
+            Currency basekey = Currency.GetCurrency(baseCurrency);
+            Currency quotekey = Currency.GetCurrency(quotationCurrency);
+            //Retrieve the currency pair
+            CurrencyPair tempPair = Pairs[new CurrencyPair(basekey,quotekey)];
+            //Reverse the pair if required
+            if(tempPair.BaseCurrency != basekey)
+            {
+                //This does not create a new instance but reverse the actual instance.
+                //The idea is that the user will probably always provide the same pair
+                tempPair.ReverseThisCurrencyPair();
+            }
+            //Set values and switch to bid-ask mode
+            tempPair.SetMIDfromBIDASK(bid,ask);
+            tempPair.SwitchToBIDASK();
+        }
+
+        /// <summary>
+        /// Set the MID rate for the selected currency pair
+        /// </summary>
+        /// <param name="baseCurrency">Base currency</param>
+        /// <param name="quotationCurrency">Quotation currency</param>
+        /// <param name="mid">MID rate to set</param>
+        public static void SetMID(string baseCurrency, string quotationCurrency, double mid)
+        {
+            //Create the key to retrive the currency pair
+            Currency basekey = Currency.GetCurrency(baseCurrency);
+            Currency quotekey = Currency.GetCurrency(quotationCurrency);
+            //Retrieve the currency pair
+            CurrencyPair tempPair = Pairs[new CurrencyPair(basekey,quotekey)];
+            //Reverse if required
+            if(tempPair.BaseCurrency != basekey)
+            {
+                //This does not create a new instance but reverse the actual instance.
+                //The idea is that the user will probably always provide the same pair
+                tempPair.ReverseThisCurrencyPair();
+            }
+            //Set values and switch to MID mode
+            tempPair.SetMIDOnly(mid);
+            tempPair.SwitchToMID();
+        }
+
 
         /*****************************      Properties      **************************************/
 
@@ -123,7 +227,6 @@ namespace ValueOperator
             result = 31 * result + (int) (z ^ (z >> 32));
             return result;
 
-            //return Convert.ToInt32(isoLetters[0]);
         }
     }
 
@@ -151,9 +254,8 @@ namespace ValueOperator
             if(baseCurrency==quotationCurrency){throw new System.ArgumentException("Quotation and base currency cannot be the same");}
             BaseCurrency = baseCurrency;
             QuotationCurrency = quotationCurrency;
-            BID = 0;
-            ASK = 0;
-            MID = 0;
+            SetMIDfromBIDASK(0,0);
+            IsBIDASK = false;
         }
 
         /// <summary>
@@ -166,9 +268,8 @@ namespace ValueOperator
         {
             BaseCurrency = baseCurrency;
             QuotationCurrency = quotationCurrency;
-            BID = mid;
-            ASK = mid;
-            MID = mid;
+            SetAllRatesToMID(mid);
+            SwitchToMID();
         }
 
         /// <summary>
@@ -182,18 +283,149 @@ namespace ValueOperator
         {
             BaseCurrency = baseCurrency;
             QuotationCurrency = quotationCurrency;
-            BID = bid;
-            ASK = ask;
-            MID = (bid + ask) / 2.0;
+            SetMIDfromBIDASK(bid,ask);
+            SwitchToBIDASK();
         }
 
         /*****************************      Properties      **************************************/
-
+        /// <summary>
+        /// Base currency of the pair
+        /// </summary>
         public Currency BaseCurrency { get; private set;}
+
+        /// <summary>
+        /// Quotation currency of the pair
+        /// </summary>
         public Currency QuotationCurrency { get; private set;}
-        public double BID { get; set; }
-        public double ASK { get; set; }
+
+        /// <summary>
+        /// If true, the BID-ASK values are used to retrive the exchange rate
+        /// </summary>
+        private bool IsBIDASK { get; set; }
+
+        /// <summary>
+        /// BID value of the exchange rate
+        /// </summary>
+        /// <returns></returns>
+        public double BID { get; private set; }
+
+        /// <summary>
+        /// ASK value of the exchange rate
+        /// </summary>
+        public double ASK { get; private set; }
+
+        /// <summary>
+        /// MID value of the exchange rate
+        /// </summary>
         public double MID { get; private set; }
+
+        /**************************      Reverse Currency Pair      *******************************/
+
+        /// <summary>
+        /// Create a new <c>CurrencyPair</c> instance with reversed values, without modifying the original instance
+        /// </summary>
+        /// <returns>A reversed <c>CurrencyPair</c></returns>
+        public CurrencyPair GetNewReversedCurrencyPair()
+        {
+            //Create a new <c>CurrencyPair</c> instance with reversed currencies
+            CurrencyPair tempPair = new CurrencyPair(this.QuotationCurrency, this.BaseCurrency);
+            //Reverse rates
+            if(this.BID != 0 && this.ASK != 0){tempPair.SetMIDfromBIDASK(1.0/this.ASK,1.0/this.BID);}
+            else if(this.MID != 0){tempPair.SetMIDOnly(1.0/this.MID);}
+            if(this.IsBIDASK){tempPair.SwitchToBIDASK();}
+            return tempPair;
+        }
+
+        /// <summary>
+        /// Reverse <c>this</c> instance of <c>CurrencyPair</c>
+        /// </summary>
+        public void ReverseThisCurrencyPair()
+        {
+            //Exchange quotation and base currency
+            Currency tempCurrency;
+            tempCurrency = this.QuotationCurrency;
+            this.QuotationCurrency = this.BaseCurrency;
+            this.BaseCurrency = tempCurrency;
+            //Reverse rates
+            double tempAsk = 1/this.BID;
+            if(this.BID != 0){this.BID = 1/this.ASK;}
+            if(this.ASK != 0){this.ASK = 1/tempAsk;}
+            if(this.MID != 0){this.MID = 1/this.MID;}   //Warning: rounding precision might be an issue here
+        }
+
+        /**********************      BID-ASK and MID Mode Management     *************************/
+
+        /// <summary>
+        /// Set the exchange rate mode to the MID rate
+        /// </summary>
+        public void SwitchToMID()
+        {
+            IsBIDASK = false;
+        }
+
+        /// <summary>
+        /// Set the exchange rate mode to BID-ASK. Warning: if no BID-ASK spread has been provided, use the MID rate
+        /// </summary>
+        public void SwitchToBIDASK()
+        {
+            IsBIDASK = true;
+        }
+
+
+
+        /***************************        Set Exchange Rates      ******************************/
+
+        /// <summary>
+        /// Set the BID, ASK and MID exchange rates
+        /// </summary>
+        /// <param name="bid">BID exchange rate</param>
+        /// <param name="ask">ASK exchange rate</param>
+        public void SetMIDfromBIDASK(double bid, double ask)
+        {
+            BID = bid;
+            ASK = ask;
+            MID = (bid+ask)/2.0;
+        }
+
+        /// <summary>
+        /// Set the MID, ASK and BID rate at the same value
+        /// </summary>
+        /// <param name="mid">MID exchange rate</param>
+        public void SetAllRatesToMID(double mid)
+        {
+            BID = mid;
+            ASK = mid;
+            MID = mid;
+        }
+
+        /// <summary>
+        /// Set the MID rate but keep the ASK and BID at the same value. Set the mode to MID.
+        /// </summary>
+        /// <param name="mid">MID exchange rate</param>
+        public void SetMIDOnly(double mid)
+        {
+            MID = mid;
+            SwitchToMID();
+        }
+
+        /*************************      Convert Currency        ***********************************/
+
+        /// <summary>
+        /// Convert the value using the <c>CurrencyPair</c> data
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public double Convert(double val)
+        {
+            if(IsBIDASK)    //If bid-ask mode, use BID value
+            {
+                return val * BID;
+            }
+            else            //Else use mid
+            {
+                return val * MID;
+            }
+        }
 
         /******************************     Overrided Methods   *************************************/
 
@@ -203,13 +435,13 @@ namespace ValueOperator
         /// <returns>A <c>string</c> representation of the <c>CurrencyPair</c> instance</returns>
         public override string ToString()
         {
-            if(BID != 0 || ASK != 0)
+            if(IsBIDASK && (BID != 0 || ASK != 0))
             {
-                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + BID + "/" + ASK);
+                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + String.Format("{0:0.0000}",BID) + "/" + String.Format("{0:0.0000}",ASK));
             }
             else if(MID != 0)
             {
-                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + MID);
+                return(BaseCurrency.ISO + QuotationCurrency.ISO + " " + String.Format("{0:0.0000}",MID));
             }
             else
             {
