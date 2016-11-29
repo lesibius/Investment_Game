@@ -184,5 +184,25 @@ namespace FinanceLib.ValueOperator
         {
             return new Value(vdouble - v1.Unit, v1.Currency);
         }
+
+        /// <summary>
+        /// Creates a new <c>Value</c> with the number of <c>Unit</c> multiplied by the double
+        /// </summary>
+        /// <param name="m">Multiplier</param>
+        /// <param name="v"><c>Value</c> instance</param>
+        public static Value operator *(double m, Value v)
+        {
+            return new Value(m*v.Unit,v.Currency);
+        }
+
+        /// <summary>
+        /// Creates a new <c>Value</c> with the number of <c>Unit</c> multiplied by the double
+        /// </summary>
+        /// <param name="v"><c>Value</c> instance</param>
+        /// <param name="m">Multiplier</param>
+        public static Value operator *(Value v, double m)
+        {
+            return m*v;
+        }
     }
 }

@@ -72,5 +72,15 @@ namespace FinanceLib.Investment
         /// </summary>
         /// <returns></returns>
         public Value MarketValue { get; private set; }
+
+        /********************************************************************************
+        *                               Overrided Methods                               *
+        ********************************************************************************/
+
+
+        public override string ToString()
+        {
+            return this.Code + " - " + this.Name;
+        }
     }
 }
