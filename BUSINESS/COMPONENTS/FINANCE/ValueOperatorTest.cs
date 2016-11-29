@@ -1,5 +1,6 @@
 using System;
-using ValueOperator;
+using FinanceLib.ValueOperator;
+using FinanceLib.Investment;
 
 
 public class program
@@ -14,13 +15,8 @@ public class program
         Currency.SetBIDASK("EUR","USD",1.05,1.07);
         Currency.SetMID("EUR","JPY",118.70);
         Currency.SetMID("USD","JPY",111.86);
-
-
         
-        Value x = new Value(1200,"EUR");
-        Value y = new Value(125400,"JPY");
-        Value z = new Value(1200,"USD");
-        Console.WriteLine("{0} - {1} + {2} = {3}",x,y,z,x-y+z);
+        Security SomeBond = new Security("2.5% OF SOME COMPANY","US123123","USD",100000,"USD",102321);
 
     }
 }

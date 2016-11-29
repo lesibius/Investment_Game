@@ -1,60 +1,76 @@
 using System;
+using FinanceLib.ValueOperator;
 
 
 
-namespace Core_Investment
+namespace FinanceLib.Investment
 {
-    
-    /// <summary>
-    /// Abstract class used as a model to securities
-    /// </summary>
-    public abstract class Security
-    {
-        /// <summary>
-        /// Code of the security (e.g. ISIN)
-        /// </summary>
-        private string Code { get; set; }
-
-        /// <summary>
-        /// Name of the security
-        /// </summary>
-        private string Name { get; set; }
-
-
-    }
-
-
 
     /// <summary>
-    /// Implementation of the abstract <c>Security</c> class for equities
+    /// Basis class for securities
     /// </summary>
-    public class Equity : Security
+    public class Security
     {
 
-        ///<summary>
-        /// Constructor for the <c>Equity</c> class
+        /********************************************************************************
+        *                               Constructor                                     *
+        ********************************************************************************/
+
+        /// <summary>
+        /// Constructor of the <c>Security</c> class
         /// </summary>
-        /// <param name="code">ISIN</param>
-        /// <param name="name">Name of the security (e.g. APPL Share class A)</param>
-        /// <param name="companyName"></param>
-        public Equity(string code, string name, string companyName)
+        /// <param name="name">Name of the security</param>
+        /// <param name="code">Code of the security (e.g. ISIN)</param>
+        /// <param name="nominal">Nominal value of the security</param>
+        /// <param name="market">Market value of the security</param>
+        public Security(string name, string code, Value nominal, Value market)
         {
-            Code = code;
             Name = name;
+            Code = code;
+            NominalValue = nominal;
+            MarketValue = market;
         }
-
-        private string Code {get; set; }
-        private string Name {get; set; }
 
         /// <summary>
-        /// Override the <c>ToString</c> method
+        /// Constructor of the <c>Security</c> class
         /// </summary>
-        /// <returns>A string describing the security</returns>
-        public override string ToString()
+        /// <param name="name">Name of the security</param>
+        /// <param name="code">Code of the security (e.g. ISIN)</param>
+        /// <param name="nomCurrency">Nominal value currency</param>
+        /// <param name="nomUnit">Nominal value expressed in nominal value currency</param>
+        /// <param name="markCurrency">Market value currency</param>
+        /// <param name="markUnit">Market value expressed in market value currency</param>
+        public Security(string name, string code, string nomCurrency, double nomUnit, string markCurrency, double markUnit)
         {
-            return(Code + " - " + Name);
+            Name = name;
+            Code = code;
+            NominalValue = new Value(nomUnit,nomCurrency);
+            MarketValue = new Value(markUnit,markCurrency);
         }
 
-    }
 
+        /********************************************************************************
+        *                               Properties                                      *
+        ********************************************************************************/
+        /// <summary>
+        /// Name of the <c>Security</c> instance
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Code (e.g. ISIN) of the <c>Security</c> instance
+        /// </summary>
+        public string Code { get; private set; }
+
+        /// <summary>
+        /// Nominal value of the <c>Security</c> instance
+        /// </summary>
+        public Value NominalValue { get; private set; }
+
+        /// <summary>
+        /// Market value of the <c>Security</c> instance
+        /// </summary>
+        /// <returns></returns>
+        public Value MarketValue { get; private set; }
+    }
 }
