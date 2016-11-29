@@ -74,6 +74,29 @@ namespace FinanceLib.Investment
         public Value MarketValue { get; private set; }
 
         /********************************************************************************
+        *                               Overrided Operators                             *
+        ********************************************************************************/
+        /// <summary>
+        /// Return a new position from the <c>Security</c> instance containing m contracts
+        /// </summary>
+        /// <param name="m">Quantity of <c>Security</c> in the position</param>
+        /// <param name="s"><c>Security</c> in the position</param>
+        public static Position operator *(double m, Security s)
+        {
+            return new Position(s,m);
+        }
+
+        /// <summary>
+        /// Return a new position from the <c>Security</c> instance containing m contracts
+        /// </summary>
+        /// <param name="s"><c>Security</c> in the position</param>
+        /// <param name="m">Quantity of <c>Security</c> in the position</param>
+        public static Position operator *(Security s, double m)
+        {
+            return m*s;
+        }
+
+        /********************************************************************************
         *                               Overrided Methods                               *
         ********************************************************************************/
 
