@@ -1,5 +1,6 @@
 using System;
 using FinanceLib.ValueOperator;
+using FinanceLib.Measurement;
 
 
 
@@ -9,7 +10,7 @@ namespace FinanceLib.Investment
     /// <summary>
     /// Basis class for securities
     /// </summary>
-    public class Security
+    public class Security : IMarketMeasurable
     {
 
         /********************************************************************************
