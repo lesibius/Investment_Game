@@ -117,11 +117,6 @@ namespace FinanceLib.Investment
         /************************************************************************************
         *                            Overrided Operators                                    *
         ************************************************************************************/
-        /*
-        public static Portfolio operator +(Portfolio por, Position pos)
-        {
-            Portfolio.AddPosition(pos);
-        }*/
 
 
     }
