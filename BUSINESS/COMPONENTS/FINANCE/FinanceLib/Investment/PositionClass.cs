@@ -89,6 +89,13 @@ namespace FinanceLib.Investment
             return p - q;
         }
 
+        public static Portfolio operator +(Position p1, Position p2)
+        {
+            Portfolio tempPortfolio = new Portfolio(p1.Holding.NominalValue.Currency, p1);
+            tempPortfolio.AddPosition(p2);
+            return tempPortfolio;
+        }
+
         /********************************************************************************************
         *                               Overrided Methods                                           *
         ********************************************************************************************/

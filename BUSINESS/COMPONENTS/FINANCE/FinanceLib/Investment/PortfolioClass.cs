@@ -115,6 +115,20 @@ namespace FinanceLib.Investment
         }
 
         /************************************************************************************
+        *                            Manage Currencies                                      *
+        ************************************************************************************/
+
+        public void SetCurrency(string currency)
+        {
+            this.ReferenceCurrency = Currency.GetCurrency(currency);
+        }
+
+        public void SetCurrency(Currency currency)
+        {
+            this.ReferenceCurrency = currency;
+        }
+
+        /************************************************************************************
         *                            Overrided Operators                                    *
         ************************************************************************************/
 

@@ -9,9 +9,18 @@ namespace FinanceLib.Measurement
         public PerformanceMeasurer(IMarketMeasurable measurable)
         {
             Measurable = measurable;
+            PerformanceList = new List<Performance>();
         }
 
         public IMarketMeasurable Measurable { get; private set;}
+
+        public List<Performance> PerformanceList { get; private set; }
+
+
+        public void AppendToPerformanceQueue(Performance perf)
+        {
+            PerformanceList.Add(perf);
+        }
 
     }
 

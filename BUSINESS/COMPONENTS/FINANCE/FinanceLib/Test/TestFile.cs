@@ -26,11 +26,10 @@ public class program
         
         Security SomeBond = new Security("2.5% PLAIN VANILLA BOND OF SOME COMPANY","US123123","USD",100,"USD",102.32);
         Security SomeEquity = new Security("SOME A CLASS SHARE","CH1212","CHF",100,"CHF",100);
-        Position BondPosition = 50 * SomeBond;
-        Portfolio p = new Portfolio("JPY",BondPosition);
-        p.AddPosition(20 * SomeEquity);
-        p.AddPosition(50 * SomeEquity);
-        p.AddPosition(-10 * SomeEquity);
+        Portfolio p = 20 * SomeBond + 50 * SomeEquity;
+        p.SetCurrency("JPY");
+        Position pos = new Position(SomeEquity,10);
+        p.AddPosition(pos);
         Console.WriteLine("Number of positions in the portfolio: {0}",p.NumberOfPositions);
         Console.WriteLine("Market value of the portfolio: {0}",p.MarketValue);
 
