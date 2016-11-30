@@ -34,8 +34,8 @@ public class program
         Console.WriteLine("Number of positions in the portfolio: {0}",p.NumberOfPositions);
         Console.WriteLine("Market value of the portfolio: {0}",p.MarketValue);
 
-        PerformanceMeasurer pm = new PerformanceMeasurer();
-        pm.AddMeasurable();
+        PerformanceMeasurer pm = new PerformanceMeasurer(SomeEquity);
+        Console.WriteLine(pm);
 
     }
 }

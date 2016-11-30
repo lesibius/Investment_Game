@@ -8,15 +8,11 @@ namespace FinanceLib.Measurement
     {
         public PerformanceMeasurer(IMarketMeasurable measurable)
         {
-            Measurable = new HashSet<IMarketMeasurable>();
             Measurable = measurable;
         }
 
-        public delegate
+        public IMarketMeasurable Measurable { get; private set;}
 
     }
-    
-    
-
 
 }
