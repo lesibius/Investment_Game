@@ -20,11 +20,13 @@ public class program
         Currency.SetMID("USD","CHF",1.01);
         Currency.SetMID("CHF","JPY",111.10);
         
-        Security SomeBond = new Security("2.5% PLAIN VANILLA BOND OF SOME COMPANY","US123123","USD",1000,"USD",1023.21);
+        Security SomeBond = new Security("2.5% PLAIN VANILLA BOND OF SOME COMPANY","US123123","USD",100,"USD",102.32);
         Security SomeEquity = new Security("SOME A CLASS SHARE","CH1212","CHF",100,"CHF",100);
         Position BondPosition = 50 * SomeBond;
-        Portfolio p = new Portfolio("CHF",BondPosition);
+        Portfolio p = new Portfolio("JPY",BondPosition);
         p.AddPosition(20 * SomeEquity);
+        p.AddPosition(50 * SomeEquity);
+        p.AddPosition(-10 * SomeEquity);
         Console.WriteLine("Number of positions in the portfolio: {0}",p.NumberOfPositions);
         Console.WriteLine("Market value of the portfolio: {0}",p.MarketValue);
     }

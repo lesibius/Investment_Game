@@ -49,7 +49,45 @@ namespace FinanceLib.Investment
         *                               Overrided Operators                                         *
         ********************************************************************************************/
 
-        
+        /// <summary>
+        /// Return a new <c>Position</c> instance with an increase quantity
+        /// </summary>
+        /// <param name="p">Left hand side <c>Position</c> instance</param>
+        /// <param name="q">Right hand side <c>double</c></param>
+        public static Position operator +(Position p, double q)
+        {
+            return new Position(p.Holding, p.Quantity + q);
+        }
+
+        /// <summary>
+        /// Return a new <c>Position</c> instance with an increase quantity
+        /// </summary>
+        /// /// <param name="q">Left hand side <c>double</c></param>
+        /// <param name="p">Right hand side <c>Position</c> instance</param>
+        public static Position operator +(double q, Position p)
+        {
+            return p + q;
+        }
+
+        /// <summary>
+        /// Return a new <c>Position</c> instance with a decreased quantity
+        /// </summary>
+        /// <param name="p">Left hand side <c>Position</c> instance</param>
+        /// <param name="q">Right hand side <c>double</c></param>
+        public static Position operator -(Position p, double q)
+        {
+            return new Position(p.Holding, p.Quantity - q);
+        }
+
+        /// <summary>
+        /// Return a new <c>Position</c> instance with an decreased quantity
+        /// </summary>
+        /// /// <param name="q">Left hand side <c>double</c></param>
+        /// <param name="p">Right hand side <c>Position</c> instance</param>
+        public static Position operator -(double q, Position p)
+        {
+            return p - q;
+        }
 
         /********************************************************************************************
         *                               Overrided Methods                                           *

@@ -41,7 +41,7 @@ namespace FinanceLib.Investment
         {
             ReferenceCurrency = referenceCurrency;
             Positions = new Dictionary<Security,Position>();
-            Positions.Add(initPosition.Holding,initPosition);
+            this.AddPosition(initPosition);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace FinanceLib.Investment
         {
             ReferenceCurrency = Currency.GetCurrency(referenceCurrency);
             Positions = new Dictionary<Security,Position>();
-            Positions.Add(initPosition.Holding,initPosition);
+            this.AddPosition(initPosition);
         }
 
         /************************************************************************************
@@ -101,10 +101,17 @@ namespace FinanceLib.Investment
         /// <summary>
         /// Add a <c>Position</c> instance to the <c>Portfolio</c> instance
         /// </summary>
-        /// <param name="position"></param>
+        /// <param name="position"><c>Position</c> instance to add to the <c>Portfolio</c> instance</param>
         public void AddPosition(Position position)
         {
-            if(!Positions.K)
+            if(!Positions.ContainsKey(position.Holding))
+            {
+                Positions.Add(position.Holding, position);
+            }
+            else
+            {
+                Positions[position.Holding] = Positions[position.Holding] + position.Quantity;
+            }
         }
 
         /************************************************************************************
