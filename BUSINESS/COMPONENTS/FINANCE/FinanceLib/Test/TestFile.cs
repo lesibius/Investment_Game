@@ -34,7 +34,10 @@ public class program
         Console.WriteLine("Market value of the portfolio: {0}",p.MarketValue);
 
         PerformanceMeasurer pm = new PerformanceMeasurer(SomeEquity);
-        Console.WriteLine(pm);
+        Console.WriteLine("{0}",pm);
+
+        PerformanceElement pe1 = new PerformanceElement(new DateTime(1,1,1),SomeBond.MarketValue);
+        Console.WriteLine("{0}",pe1);
 
     }
 }

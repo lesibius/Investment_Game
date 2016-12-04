@@ -1,38 +1,64 @@
 using System;
+using FinanceLib.ValueOperator;
 
 
 
 namespace FinanceLib.Measurement
 {
-    public class Performance
+    public class PerformanceElement
     {
-        /// <summary>
-        /// Create a new <c>Performance</c> instance
-        /// </summary>
-        /// <param name="beginDate">Begin date for the performance measurement</param>
-        /// <param name="endDate">End date for the performance measurement</param>
-        /// <param name="val">Actual value of the performance as measured between the begin date and the end date</param>   
-        public Performance(DateTime beginDate, DateTime endDate, double val)
+         
+        public PerformanceElement(DateTime Date, Value marketValue, Value externalCashFlow, PerformanceElement previous = null)
         {
-            BeginDate = beginDate;
-            EndDate = endDate;
-            Value = val;
+            this.Date = Date;
+            this.MarketValue = marketValue;
+            this.ExternalCashFlow = externalCashFlow;
+            this.Next = null;
+            if(previous != null)
+            {
+                previous.AppendPerformanceElement(this);
+            }
+        }
+
+        public PerformanceElement(DateTime Date, Value marketValue)
+        {
+            this.Date = Date;
+            this.MarketValue = marketValue;
+            this.ExternalCashFlow = new Value(0,marketValue.Currency);
+            this.Previous = null;
+            this.Next = null;
         }
 
         /// <summary>
-        /// Date for the begining of the performance measurement
+        /// Measurement date for the performance
         /// </summary>
-        public DateTime BeginDate { get; private set; }
+        public DateTime Date { get; private set; }
 
         /// <summary>
-        /// Date for the end of the performance measurement
+        /// Market value of the object on the measurement date
         /// </summary>
-        public DateTime EndDate { get; private set; }
+        public Value MarketValue { get; private set; }
 
         /// <summary>
-        /// Performance between <c>BeginDate</c> and <c>EndDate</c>
+        /// Value of external cash flow on the measurement date
         /// </summary>
-        public double Value { get; private set; }
+        /// <returns></returns>
+        public Value ExternalCashFlow { get; private set; }
+
+        public PerformanceElement Previous { get; private set; }
+
+        public PerformanceElement Next { get; private set; }
+
+
+        public void AppendPerformanceElement(PerformanceElement next)
+        {
+            this.Next = next;
+        }
+
+        public override string ToString()
+        {
+            return Date.ToString() + " - MV: " + MarketValue.ToString() + " - External CF: " + ExternalCashFlow.ToString();
+        }
 
     }
 }
