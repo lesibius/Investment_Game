@@ -4,13 +4,15 @@ using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using Business_Data;
 
+using FinanceLib.ValueOperator;
+
 namespace Data.AccessComponents 
 {
 
     /// <summary>
     /// Wrapper to communicate with the accounting database
     /// </summary>
-    public class AccountingCenterWrapper : IAuthenticable
+    public class AccountingCenterWrapper : IAuthenticable, IExchangeRateProvider
     {
         /// <summary>
         /// Constructor of the wrapper
@@ -137,6 +139,21 @@ namespace Data.AccessComponents
                 Console.WriteLine("{0}",sqlException.ToString());
                 return(false);
             }
+        }
+
+
+        /****************************************************************************************
+        *                       IExchangeRateProvider Implementation                            *
+        ****************************************************************************************/
+
+        public double Convert(string baseCurrency, string quotationCurrency)
+        {
+            return 2.0;
+        }
+
+        public double Convert(string baseCurrency, string quotationCurrency, DateTime date)
+        {
+            return 2.0;
         }
 
     } 
