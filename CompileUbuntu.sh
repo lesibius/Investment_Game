@@ -41,7 +41,7 @@ echo "Compiling command line application"
 echo "Aborted"
 #dmcs ApplicationCMD.cs $UI_Global $UI_CMD $BUSINESS $FINANCELIB $DATA $INTERFACE $dll_files
 echo  "Compiling test application"
-dmcs BUSINESS/COMPONENTS/FINANCE/FinanceLib/Test/*.cs $UI_Global $UI_CMD $BUSINESS $FINANCELIB $DATA $INTERFACE $dll_files
+dmcs BUSINESS/COMPONENTS/FINANCE/FinanceLib/Test/*.cs $UI_Global $UI_CMD $BUSINESS $FINANCELIB $DATA $INTERFACE $dll_files --out:BUSINESS/COMPONENTS/FINANCE/FinanceLib/Test/TestFile.exe
 
 echo "Compilation: done"
 
