@@ -15,15 +15,16 @@ namespace Business.Workflow
         Finished
     }
     
-    public class WorkflowOperatorState
+
+    public class WorkflowOperator
     {
 
-        public WorkFlowOperator()
+        public WorkflowOperator()
         {
-            State = WorkflowState.Unstarted;
+            WorkflowState = WorkflowOperatorState.Unstarted;
         }
 
-        public WorkflowState State { private set; get;}
+        public WorkflowOperatorState WorkflowState { private set; get;}
 
     }
 
