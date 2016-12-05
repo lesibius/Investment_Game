@@ -1,16 +1,18 @@
 using System;
-using System.Windows.Forms.DataVisualization;
 
 using FinanceLib.ValueOperator;
 using FinanceLib.Investment;
 using FinanceLib.Measurement;
 
-
+using Data.AccessComponents;
+using Data.
 
 public class program
 {
     public static void Main()
     {
+
+        //ExchangeRateHandler FXHandler = new ExchangeRateHandler();
         
         Currency.CreateCurrency("Euro","EUR");
         Currency.CreateCurrency("US Dollar","USD");
